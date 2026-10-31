@@ -93,3 +93,31 @@ le 30 octobre, `paudrysakho@gmail.com` le 31 — vérifier le `viewUrl` que renv
 **L'agence préfère les brouillons aux envois** : *« tu fais les brouillons des mails et moi
 j'envoie »*. Et un PDF de plus de 25 Mo ne peut pas être joint depuis une session : lui
 donner le fichier dans la conversation, elle le joint elle-même.
+
+---
+
+## 6. Mise à jour du 31 octobre 2026 — la plaquette part en image dans les mails
+
+L'agence envoie la plaquette aux entreprises **dans le corps du mail**, pas en pièce jointe :
+elle doit être visible sans ouvrir ni cliquer. Deux changements ici :
+
+1. **Les numéros de l'encart « Parlons-en » sont inversés** : `Cave 71 : 02 49 62 66 45 ·
+   Carline : 06 49 19 16 75`. Demande de l'agence pour le mail (« on veut que les gens
+   appellent d'abord l'entreprise plutôt que le portable ») ; la plaquette suit, pour que les
+   deux disent la même chose. Champ `appel_numeros` de `data/plaquette.json`.
+2. **Export image** pour le mail :
+
+   ```sh
+   PNG=1 npm run plaquette      # → dist/mail/ (page entière + moitiés haut / bas)
+   ```
+
+   Rendu à 2× (1 587 px de large) pour rester net quand on zoome sur un téléphone ; les JPEG
+   de la campagne sont dans le dépôt `recherche-client-csp-`, sous
+   `claude/campagne-coffrets/`, affichés à 620 px dans le mail.
+
+   `CHROME=/opt/pw-browsers/chromium` force le Chromium déjà installé (sessions cloud).
+
+**Reste ouvert, inchangé :** le tarif de l'atelier (35 à 70 € à l'oral, « 35 à 40 € » sur
+l'épreuve annotée) est toujours à confirmer avant diffusion. À noter aussi : le bandeau de
+tête validé montre encore les cuvées *Septembre* et *Petite Syrah*, qui font partie des
+produits exclus ; la ligne de produits, elle, est conforme.

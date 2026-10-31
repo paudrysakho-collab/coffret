@@ -185,7 +185,9 @@ fs.mkdirSync(path.join(RACINE, 'build'), { recursive: true });
 fs.mkdirSync(path.join(RACINE, 'dist'), { recursive: true });
 const fichier = path.join(RACINE, `build/plaquette-entreprise.html`);
 fs.writeFileSync(fichier, html);
-const nav = await chromium.launch();
+/* CHROME=/chemin/vers/chrome force un Chromium déjà installé (sessions cloud, CI).
+   Sans la variable, Playwright prend celui qu'il a téléchargé lui-même. */
+const nav = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
 const page = await nav.newPage();
 await page.goto(pathToFileURL(fichier).href, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
@@ -202,5 +204,42 @@ if (mesures.bas > 1) throw new Error(`le bas de page déborde de ${mesures.bas} 
 if (mesures.large > 1) throw new Error(`la vitrine déborde de ${mesures.large} px en largeur : réduire les hauteurs ou le nombre de coffrets`);
 if (mesures.gamme > 1) throw new Error(`la gamme déborde de ${mesures.gamme} px en largeur : réduire la hauteur des bouteilles`);
 await page.pdf({ path: SORTIE, printBackground: true, preferCSSPageSize: true });
+
+/* IMAGES POUR LE CORPS DU MAIL
+   La plaquette part aussi en image, intégrée dans le mail : le destinataire la voit
+   sans ouvrir de pièce jointe. Rendue à 2x (1240 px de large) pour rester nette quand
+   on zoome sur un téléphone, puis affichée à 620 px dans le mail.
+   PNG=1 npm run plaquette → dist/mail/ */
+if (process.env.PNG) {
+  const dossier = path.join(RACINE, 'dist/mail');
+  fs.mkdirSync(dossier, { recursive: true });
+  const elt = await page.$('.p');
+  const boite = await elt.boundingBox();
+  const ECHELLE = 2;
+  const vue = await nav.newPage({ viewport: { width: Math.round(boite.width), height: Math.round(boite.height) }, deviceScaleFactor: ECHELLE });
+  await vue.goto(pathToFileURL(fichier).href, { waitUntil: 'networkidle' });
+  await vue.evaluate(() => document.fonts.ready);
+  const cible = await vue.$('.p');
+
+  const entier = path.join(dossier, `plaquette-mail${SUFFIXE_BANDEAU()}.png`);
+  await cible.screenshot({ path: entier });
+
+  /* Version coupée en deux : la moitié haute (offre) et la moitié basse (gamme, cave,
+     numéros), pour qui préfère deux images plus lisibles qu'une page entière. */
+  const h = Math.round(boite.height);
+  const coupe = Math.round((await vue.evaluate(() => {
+    const p = document.querySelector('.p').getBoundingClientRect();
+    return document.querySelector('.gamme').getBoundingClientRect().top - p.top;
+  })));
+  for (const [nom, y, hauteur] of [['haut', 0, coupe], ['bas', coupe, h - coupe]]) {
+    await vue.screenshot({
+      path: path.join(dossier, `plaquette-mail-${nom}${SUFFIXE_BANDEAU()}.png`),
+      clip: { x: 0, y, width: Math.round(boite.width), height: hauteur },
+    });
+  }
+  await vue.close();
+  console.log(`✓ dist/mail/ — image entière + haut/bas, ${Math.round(boite.width * ECHELLE)} px de large`);
+}
+
 await nav.close();
 console.log(`✓ ${path.relative(RACINE, SORTIE)} — bandeau ${CHOIX}, ${GAMME.length} produits`);
