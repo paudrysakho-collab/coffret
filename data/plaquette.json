@@ -1,0 +1,48 @@
+{
+  "_lisez_moi": "Plaquette entreprise (une page A4). Tous les textes vivent ici, aucun n'est tapé dans le gabarit. Pas de prix : l'agence les donne de vive voix, le coffret se compose selon le budget. Source des consignes : l'agence, 30 octobre 2026.",
+  "emetteur": "Cave 71",
+  "titre": "Coffrets & ateliers",
+  "sous_titre": "des cadeaux pour vos clients et vos équipes",
+  "chapeau": "<b>Un coffret composé pour vous, en fonction de votre budget.</b> Vins, champagnes, spiritueux, bières, sans alcool et produits d’épicerie choisis un à un, pour vos clients comme pour vos équipes.",
+  "blocs": [
+    {
+      "titre": "Des coffrets composés avec vous",
+      "texte": "Vous nous dites le nombre de personnes, nous choisissons les bouteilles et les produits qui les accompagnent. Deux bouteilles et un tartinable, un magnum, un étui, un sachet d’épicerie fine : chaque coffret est monté à la demande, il n’y a pas de modèle imposé."
+    },
+    {
+      "titre": "Atelier dégustation",
+      "texte": "<b>Privatisez le lieu</b> pour votre équipe, de 8 à 10 personnes. Ou <b>inscrivez-vous</b> seul, à deux ou à trois : nous fixons une date et nous formons le groupe, 10 personnes au maximum. Dans les deux cas, formule de 35 € à 70 € par personne selon l’offre choisie."
+    }
+  ],
+  "appel": "Parlons-en : nous composons votre proposition sur mesure.",
+  "contacts": {
+    "cave": "02 49 62 66 45",
+    "carline": "06 49 19 16 75",
+    "adresse": "71 avenue de la Libération — 44400 Rezé",
+    "site": "www.cave71.com",
+    "horaires": "Du mardi au samedi, 10h-13h et 15h30-19h30"
+  },
+  "pied_agence": "Une sélection Agence SCIO",
+  "bas": {
+    "titre": "La Cave 71",
+    "texte": "La Cave 71, c’est le projet de deux passionnés de vin qui collaborent avec des vignerons tout aussi dévoués. Leurs objectifs : transmettre leur amour du vin à travers la qualité et l’authenticité des produits qu’ils proposent.",
+    "modalites": [
+      "Il est possible de panacher ou de créer des coffrets personnalisés.",
+      "Paiement à la commande.",
+      "Disponible 7 jours ouvrables après le paiement, à la Cave 71."
+    ],
+    "reserve": "Sous réserve des stocks disponibles."
+  },
+  "_sources": {
+    "bas.texte, contacts, horaires": "plaquette entreprise 2025 de la Cave 71, page 1 (mot pour mot)",
+    "bas.modalites": "plaquette 2025, page 2 (« Il est possible de panacher ou de créer des coffrets personnalisés », « Sous réserve des stocks disponibles ») et page 7 (« Paiement à la commande », « Livraison sous 7 jours »)",
+    "mentions": "plaquette 2025, page 7",
+    "titre, sous_titre, chapeau, blocs, appel": "écrits pour cette plaquette d'après les consignes de l'agence du 30 octobre 2026 : coffrets personnalisés selon le budget, atelier pour une personne, atelier privé pour l'équipe",
+    "consignes vocales de la responsable (30 octobre, 4 messages WhatsApp)": "« une plaquette avec des coffrets, montrer les produits qu'on propose, dire qu'on peut faire des ateliers de dégustation, des coffrets personnalisés, et qui nous contactent » ; « donner mon numéro de portable 06 49 19 16 75 » ; « et également le numéro de téléphone, l'adresse, etc. de la cave, bien entendu, le fixe et le portable ». Transcription complète : data/entreprise-consignes-audio.json",
+    "blocs[1] (atelier), chapeau (spiritueux et bières)": "relecture de Laurent sur l'épreuve imprimée (photo annotée du 30 octobre) et consignes vocales de l'agence : « en haut, vin, champagne, spiritueux et bière » ; l'ancien texte des ateliers est barré en entier et remplacé par « privatisation du lieu entre 8 et 10 personnes, formule de 35 à 70 € par personne en fonction de l'offre », et la deuxième formule : « ils viennent en individuel, un, deux ou trois, et nous on met une date pour qu'il y ait entre 8 et 10 personnes », « toujours un maximum de 10 personnes ». ATTENTION : l'annotation manuscrite se lit « 35 à 40 € », la consigne orale dit cinq fois « 35 à 70 € » — c'est l'oral qui a été retenu, à confirmer avant diffusion (QUESTIONS.md).",
+    "relecture du 31 octobre (épreuve annotée + consignes orales)": "« tout en haut, il faut mettre des cadeaux » → le sous-titre devient « des cadeaux pour vos clients et vos équipes » ; « rajouter sans alcool » dans l'énumération du chapeau ; « mettre photo gressin et jus de raisin », le jus entre la bière et les chocolats, les gressins entre les chocolats et la terrine ; « supprimer Boehler, celui tout à gauche » ; « 35 € à 70 € », le signe euro aussi après 35 ; « Livraison sous 7 jours » barré, remplacé par « Disponible 7 jours ouvrables après le paiement, à la Cave 71 » ; mention manuscrite « (exemple de produit) » sous la ligne de produits."
+  },
+  "mentions": "Photos non contractuelles, suggestions de présentation. Dans la limite des stocks disponibles. Sauf erreurs typographiques. Agence SCIO Vins et spirits 843 151 663 RCS Nantes.",
+  "appel_numeros": "Carline : 06 49 19 16 75 · Cave 71 : 02 49 62 66 45",
+  "legende_gamme": "Exemples de produits."
+}

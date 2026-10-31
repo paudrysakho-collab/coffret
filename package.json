@@ -1,0 +1,15 @@
+{
+  "name": "coffret-cave71",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Plaquette entreprise Cave 71 : coffrets cadeaux et ateliers dégustation.",
+  "scripts": {
+    "plaquette": "node scripts/plaquette.mjs",
+    "variantes": "BANDEAU=02 node scripts/plaquette.mjs && BANDEAU=03 node scripts/plaquette.mjs",
+    "tout": "npm run plaquette && npm run variantes"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}

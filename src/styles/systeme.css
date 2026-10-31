@@ -1,0 +1,365 @@
+/* ============================================================================
+   Catalogue Agence SCIO 2026 — « Sous nos pieds »
+   Système : variables, grille, composants. Aucune valeur en dur dans un gabarit.
+   ========================================================================= */
+
+@import url('../fonts/polices.css');
+
+:root {
+  /* ——— Les sept couleurs de terre, plus les deux couleurs de l'agence ——— */
+  --tuffeau: #F2EADA;        /* le papier */
+  --craie: #FBF8F1;          /* les fonds de tableau, un ton au-dessus */
+  --silex: #46606E;          /* bleu-gris : texte courant */
+  --gneiss: #A8515F;         /* rouge sourd */
+  --amphibolite: #3C5B47;    /* vert profond */
+  --sables: #D08C3C;         /* ocre */
+  --violet: #67067C;         /* couleur de l'agence — logo */
+  --or: #E1C853;             /* couleur de l'agence — logo */
+  --encre: #2A3942;          /* le noir du catalogue : jamais un vrai noir */
+
+  /* ——— Typographies ——— */
+  --titre: 'Young Serif', serif;
+  --courant: 'Spectral', serif;
+  --technique: 'IBM Plex Sans', sans-serif;
+
+  /* ——— Page ——— */
+  --page-l: 210mm;
+  --page-h: 260mm;
+  --fp: 0mm;                 /* fond perdu : 0 à l'écran, 3 mm pour l'imprimeur */
+  --marge-haut: 15mm;
+  --marge-bas: 13mm;
+  --marge-int: 17mm;         /* côté reliure */
+  --marge-ext: 14mm;         /* côté tranche, hors carotte */
+  --carotte-l: 9mm;          /* la bande indexée de la tranche */
+
+  /* ——— Rythme ——— */
+  --pas: 4mm;
+  /* Interlettrage maximal des capitales. Mesuré : au-delà de .03em, Chromium insère
+     des espaces dans la couche texte du PDF et « BORDEAUX » devient « BORD E AU X ».
+     Le catalogue doit rester trouvable au Ctrl+F. */
+  --interlettre: .03em;
+  --bloc-prix: 52mm;         /* largeur FIXE du bloc de prix, sur les 40 fiches */
+  --filet: .3pt;
+}
+
+/* ——— Remise à zéro ——— */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 10pt; }
+body {
+  background: var(--tuffeau);
+  color: var(--silex);
+  font-family: var(--courant);
+  font-size: 9.5pt;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-weight: 400; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================================
+   LA PAGE
+   ========================================================================= */
+@page {
+  size: calc(var(--page-l) + 2 * var(--fp)) calc(var(--page-h) + 2 * var(--fp));
+  margin: 0;
+}
+
+/* La page porte le fond perdu : tout ce qui est « à fond perdu » (inset: 0) déborde
+   donc réellement de 3 mm au-delà du trait de coupe, comme l'imprimeur l'attend. */
+.page {
+  position: relative;
+  width: calc(var(--page-l) + 2 * var(--fp));
+  height: calc(var(--page-h) + 2 * var(--fp));
+  overflow: hidden;
+  background: var(--tuffeau);
+  break-after: page;
+  page-break-after: always;
+}
+.page:last-child { break-after: auto; page-break-after: auto; }
+
+/* Le contenu vit dans le cadre : la carotte occupe la tranche, côté extérieur. */
+.cadre {
+  position: absolute;
+  top: calc(var(--marge-haut) + var(--fp));
+  bottom: calc(var(--marge-bas) + var(--fp));
+  left: calc(var(--marge-int) + var(--fp));
+  right: calc(var(--marge-ext) + var(--carotte-l) + var(--fp));
+}
+.page.verso .cadre {
+  left: calc(var(--marge-ext) + var(--carotte-l) + var(--fp));
+  right: calc(var(--marge-int) + var(--fp));
+}
+
+/* ——— La carotte : bande de tranche indexée sur les dix régions ——— */
+.carotte {
+  position: absolute; top: 0; bottom: 0; right: 0;
+  width: calc(var(--carotte-l) + var(--fp));   /* la bande part à fond perdu */
+}
+.page.verso .carotte { right: auto; left: 0; }
+.carotte svg { width: 100%; height: 100%; display: block; }
+.carotte-nom {
+  position: absolute; top: 50%; right: calc(2.1mm + var(--fp));
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font: 600 6.6pt var(--technique);
+  letter-spacing: var(--interlettre); text-transform: uppercase;
+  color: var(--craie);
+}
+.page.verso .carotte-nom { right: auto; left: calc(2.1mm + var(--fp)); transform: translateY(-50%); }
+
+/* ——— Folio ——— */
+.folio {
+  position: absolute; bottom: calc(6.5mm + var(--fp));
+  right: calc(var(--marge-ext) + var(--carotte-l) + var(--fp));
+  font: 500 7.5pt var(--technique); color: var(--silex); opacity: .72;
+  font-variant-numeric: tabular-nums;
+}
+/* l'agence, 3 octobre au soir : le numéro de page toujours à droite, le message sanitaire à gauche */
+.page.verso .folio { right: calc(var(--marge-int) + var(--fp)); }
+
+/* ——— Message sanitaire : présent sur chaque page ——— */
+.sanitaire {
+  position: absolute; bottom: calc(6.5mm + var(--fp)); left: calc(var(--marge-int) + var(--fp));
+  font: 400 5.6pt var(--technique); letter-spacing: .03em;
+  color: var(--silex); opacity: .55; text-transform: uppercase;
+}
+.page.verso .sanitaire { left: calc(var(--marge-ext) + var(--carotte-l) + var(--fp)); }
+
+/* ============================================================================
+   FICHE DOMAINE
+   ========================================================================= */
+.entete-dom {
+  display: flex; align-items: flex-start; gap: 4mm;
+  border-bottom: 1.4pt solid var(--violet);
+  padding-bottom: 2.2mm; margin-bottom: 2.8mm;
+}
+.entete-dom .num {
+  font-family: var(--titre); font-size: 27pt; line-height: .78; color: var(--violet);
+  font-variant-numeric: lining-nums;
+}
+.entete-dom h1 {
+  flex: 1; font-family: var(--titre); font-size: 20pt; line-height: 1.02;
+  color: var(--silex); letter-spacing: -.012em; padding-top: .6mm;
+}
+.entete-dom .region {
+  font: 500 8pt var(--technique); letter-spacing: var(--interlettre); text-transform: uppercase;
+  color: var(--gneiss); white-space: nowrap; padding-top: 2.4mm;
+}
+/* Au salon : le numéro du stand, dans l'or du logo, prend la place du numéro du tarif. */
+.entete-salon { align-items: center; }
+.stand-dom {
+  flex: none; width: 19mm; padding: 1.3mm 0 1.5mm; border-radius: 2mm;
+  background: var(--or); color: var(--violet);
+  display: flex; flex-direction: column; align-items: center; line-height: 1;
+}
+.stand-dom .sd-mot { font: 600 7pt var(--technique); letter-spacing: var(--interlettre); text-transform: uppercase; }
+.stand-dom .sd-n { font-family: var(--titre); font-size: 22pt; line-height: 1.02; }
+.stand-dom .sd-salle { font: 500 7pt var(--technique); }
+.entete-dom .suite { font-size: 11pt; color: var(--gneiss); font-family: var(--courant); font-style: italic; }
+
+.jetons { display: flex; flex-wrap: wrap; gap: 1.6mm 2.2mm; margin-bottom: 3mm; }
+.jeton {
+  font: 500 7.2pt var(--technique); letter-spacing: .02em;
+  border: .7pt solid var(--silex); border-radius: .9mm; padding: .8mm 2mm; color: var(--silex);
+}
+.jeton.bio {
+  border-color: var(--amphibolite); color: var(--amphibolite);
+  display: inline-flex; align-items: center; gap: 1.1mm;
+}
+.jeton .picto-label { width: 3mm; height: 3mm; display: block; }
+.jeton.alloc { background: var(--violet); border-color: var(--violet); color: var(--craie); }
+.jeton.consulter { background: var(--sables); border-color: var(--sables); color: var(--encre); }
+.jeton.panachage { border-color: var(--gneiss); color: var(--gneiss); }
+/* le tampon « Salon Privé » : l'or et le violet du logo, comme la pastille de stand du salon */
+.jeton.salon { background: var(--or); border-color: var(--or); color: var(--violet); font-weight: 600; }
+
+.haut-dom { display: flex; gap: 5mm; align-items: flex-start; margin-bottom: 3.6mm; }
+/* le texte se centre dans la bande : le peu d'air qui reste se partage au lieu de tomber en bas */
+.haut-dom .texte-dom { align-self: center; }
+.haut-dom .texte-dom { max-width: none; }
+.rond-sol { width: 30mm; height: 30mm; flex: none; }
+.texte-dom { flex: 1; font-size: 9.5pt; line-height: 1.5; max-width: 128mm; }
+.texte-dom .lettrine {
+  float: left; font-family: var(--titre); font-size: 27pt; line-height: .76;
+  padding: .8mm 1.5mm 0 0; color: var(--violet);
+}
+.texte-dom.sans-texte {
+  font-style: italic; color: rgba(70, 96, 110, .6); font-size: 9pt;
+}
+
+/* ============================================================================
+   TABLEAU DE PRIX — le composant unique des 40 domaines
+   ========================================================================= */
+table.tarif {
+  width: 100%; border-collapse: collapse; table-layout: fixed;
+  font-family: var(--technique); font-variant-numeric: tabular-nums;
+}
+table.tarif + table.tarif { margin-top: 3.6mm; }
+
+tr.bandeau th { background: var(--violet); vertical-align: bottom; }
+.intit {
+  text-align: left; font: 600 8pt var(--technique); letter-spacing: var(--interlettre);
+  text-transform: uppercase; color: var(--or); padding: 1.3mm 0 1.3mm 2.4mm;
+}
+th.c-bloc { padding: 0; }
+.c-bloc { width: var(--bloc-prix); padding: 0; }
+.bloc-prix { display: flex; align-items: flex-end; }
+.bloc-prix > * { flex: 1 1 0; text-align: right; }
+.bloc-prix .cel-prix {
+  padding: .7mm 2mm .7mm 1mm; font-size: 10pt; font-weight: 600; color: var(--encre);
+  line-height: 1.15;
+}
+/* Un prix pas encore donné (édition salon) : la case reste vide, avec un pointillé où l'écrire. */
+.bloc-prix .cel-prix.vide { align-self: stretch; position: relative; min-height: 5.6mm; }
+.bloc-prix .cel-prix.vide::after {
+  content: ''; position: absolute; left: 2mm; right: 2mm; bottom: 1.6mm;
+  border-bottom: .5pt dotted rgba(70, 96, 110, .55);
+}
+.bloc-prix .cel-prix span { font-size: 7.2pt; font-weight: 500; margin-left: .4mm; opacity: .8; }
+/* Un seul prix pour toute la ligne (un magnum à prix unique dans un tableau à paliers). */
+.bloc-prix .cel-prix.seul { flex: 1 1 100%; text-align: center; }
+/* Quatre paliers : le bloc de prix s'élargit, la colonne des vins cède la place. */
+table.tarif.p4 { --bloc-prix: 66mm; }
+/* L'offre du salon, juste après le nom du vin. */
+.offre {
+  display: inline-block; margin-left: 1.4mm; padding: 0 1.2mm; border-radius: .8mm;
+  font: 600 7.4pt/1.35 var(--technique); color: var(--violet); white-space: nowrap;
+  background: rgba(225, 200, 83, .42); vertical-align: .2mm;
+}
+.bloc-prix.entete .cel-pal {
+  font-size: 7.2pt; font-weight: 600; line-height: 1.14; color: var(--craie);
+  padding: 1.3mm 2mm; border-left: .4pt solid rgba(251, 248, 241, .3);
+}
+.bloc-prix.entete .cel-pal:first-child { border-left: 0; }
+
+tbody tr { border-bottom: var(--filet) solid rgba(70, 96, 110, .26); }
+tbody tr:nth-child(odd) { background: rgba(251, 248, 241, .72); }
+/* Une écriture plus grande dans des lignes qui ne grandissent pas : l'interligne est serré. */
+td { padding: .7mm 1.3mm; vertical-align: middle; line-height: 1.12; }
+.c-picto { width: 6mm; padding-left: 1.6mm; }
+.picto { width: 3.6mm; height: 3.6mm; display: block; }
+.c-vin .app { display: block; font-size: 8pt; font-weight: 500; color: var(--gneiss); letter-spacing: .005em; }
+.c-vin .cuv { display: block; font-size: 9.6pt; font-weight: 600; color: var(--encre); }
+.c-vin .etoile { color: var(--violet); font-weight: 600; }
+/* un mot composé ne se coupe pas (Extra-Brut, Vazart-Coquart) : voir sansVeuve() */
+.insecable { white-space: nowrap; }
+.c-detail {
+  font-size: 8pt; font-weight: 500; color: var(--silex); white-space: nowrap;
+  text-align: right; padding-right: 2.4mm;
+}
+
+/* ——— La note de prix : juste sous le dernier tableau, en grand. Elle dit ce que le prix
+   comprend (H.T., franco, départ chai…) ; l'agence y tient plus qu'à tout le reste. ——— */
+.note-prix {
+  margin-top: 2mm; padding: 1.2mm 0 1.2mm 3mm; border-left: 1.4pt solid var(--violet);
+  font: 500 10.5pt var(--technique); line-height: 1.3; color: var(--encre);
+}
+.note-prix.sans-note { font-style: italic; color: var(--silex); }
+/* Au salon, l'offre du stand, juste sous la note de prix. */
+.offre-salon {
+  margin-top: .4mm; padding: .2mm 0 1.2mm 3mm; border-left: 1.4pt solid var(--or);
+  font: 600 10.5pt var(--technique); line-height: 1.3; color: var(--violet);
+}
+
+/* ——— Pied de fiche ——— */
+.pied-dom {
+  margin-top: 2.6mm; padding-top: 1.8mm; border-top: .7pt solid var(--silex);
+  display: flex; justify-content: space-between; gap: 4mm;
+  font: 400 7.2pt var(--technique); color: rgba(70, 96, 110, .92);
+}
+.pied-dom strong { font-weight: 600; color: var(--violet); }
+.legende {
+  margin-top: 1.6mm; display: flex; flex-wrap: wrap; gap: 1.2mm 3.4mm; align-items: center;
+  font: 400 6.5pt var(--technique); color: rgba(70, 96, 110, .78);
+}
+.legende span { display: inline-flex; align-items: center; gap: 1.1mm; }
+.legende .picto { width: 2.6mm; height: 2.6mm; }
+
+/* ——— Encart de panachage entre domaines ——— */
+.alliance {
+  margin-top: 2.6mm; background: rgba(168, 81, 95, .1); border-left: 1.4pt solid var(--gneiss);
+  padding: 1.8mm 3mm; font: 500 7.4pt var(--technique); color: var(--gneiss);
+}
+.alliance em { font-style: normal; font-weight: 400; color: var(--silex); }
+
+/* ============================================================================
+   TRAMES DE SOL — tuilées à taille fixe, quelle que soit la taille de l'élément.
+   Une trame dessinée en SVG et posée en fond : elle ne se déforme jamais.
+   ========================================================================= */
+.trame { position: absolute; inset: 0; }
+.trame-ecailles {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9'><path d='M-2 9 Q5 1 12 9 M12 9 Q19 1 26 9' fill='none' stroke='rgba(0,0,0,.30)' stroke-width='1.1'/></svg>");
+  background-size: 3.7mm 2.4mm;
+}
+.trame-veines {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='26' height='14'><path d='M0 4 C7 1 11 9 18 6 S26 3 30 7' fill='none' stroke='rgba(0,0,0,.30)' stroke-width='1'/><path d='M-4 11 C3 8 7 15 14 12 S22 10 26 13' fill='none' stroke='rgba(0,0,0,.30)' stroke-width='.7'/></svg>");
+  background-size: 6.9mm 3.7mm;
+}
+.trame-grains {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><circle cx='2.5' cy='3' r='1.5' fill='rgba(0,0,0,.30)'/><circle cx='8' cy='7.5' r='1.1' fill='rgba(0,0,0,.30)'/><circle cx='5' cy='9.5' r='.7' fill='rgba(0,0,0,.30)'/></svg>");
+  background-size: 2.9mm 2.9mm;
+}
+.trame-pointille {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='9'><circle cx='2' cy='2' r='.9' fill='rgba(0,0,0,.30)'/><circle cx='6.5' cy='6' r='.9' fill='rgba(0,0,0,.30)'/></svg>");
+  background-size: 2.4mm 2.4mm;
+}
+.trame-galets {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='14'><ellipse cx='6' cy='5' rx='5' ry='3.1' fill='none' stroke='rgba(0,0,0,.30)' stroke-width='1'/><ellipse cx='17' cy='10' rx='4.2' ry='2.6' fill='none' stroke='rgba(0,0,0,.30)' stroke-width='1'/></svg>");
+  background-size: 5.8mm 3.7mm;
+}
+
+/* ——— Respiration de bas de fiche : le sol de la région, en coupe ——— */
+.respire { display: flex; flex-direction: column; }
+.respire .legende-sol {
+  font: 400 7.2pt var(--technique); letter-spacing: var(--interlettre); text-transform: uppercase;
+  color: var(--gneiss); margin: 4mm 0 1.6mm;
+}
+.respire-sol { position: relative; width: 100%; flex: 1; overflow: hidden; border-radius: 1.5mm; }
+.respire-sol svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+
+/* ============================================================================
+   TRAITS DE COUPE — version imprimeur seulement.
+   Quatre équerres posées dans le fond perdu, à 1 mm du format fini.
+   ========================================================================= */
+.traits { position: absolute; inset: 0; pointer-events: none; }
+.traits i {
+  position: absolute; background: #000; display: block;
+}
+.traits .h { width: calc(var(--fp) - 1mm); height: .1mm; }
+.traits .v { width: .1mm; height: calc(var(--fp) - 1mm); }
+.traits .hg { left: 0; }
+.traits .hd { right: 0; }
+.traits .vh { top: 0; }
+.traits .vb { bottom: 0; }
+.traits .t { top: var(--fp); }
+.traits .b { bottom: var(--fp); }
+.traits .g { left: var(--fp); }
+.traits .d { right: var(--fp); }
+
+/* ============================================================================
+   LES DEUX EMPLACEMENTS D'IMAGE
+   Réservés sur les 40 fiches, à la même place et à la même taille.
+   L'agence y pose elle-même le rond du vigneron et la bouteille.
+   Le pointillé est un guide de montage : il disparaît dès qu'une image est posée.
+   ========================================================================= */
+.emplacement {
+  flex: none; display: flex; align-items: center; justify-content: center;
+  border: .4mm dashed rgba(70, 96, 110, .38);
+  color: rgba(70, 96, 110, .5);
+  font: 500 6.2pt var(--technique); line-height: 1.25; text-align: center;
+  letter-spacing: var(--interlettre); text-transform: uppercase;
+}
+.emplacement-rond { border-radius: 50%; }   /* taille donnée par EMPLACEMENT.rond */
+.emplacement-bouteille { width: 24mm; height: 62mm; border-radius: 1.5mm; }
+
+/* L'image posée prend exactement la boîte de l'emplacement : rien ne bouge autour. */
+.photo { flex: none; }
+.photo img { display: block; width: 100%; height: 100%; }
+.photo-rond { border-radius: 50%; overflow: hidden; }
+/* le nom sous le portrait (Lucien Lurton) : posé sous le rond, sans pousser la bande */
+.rond-legende { position: relative; flex: none; }
+.legende-rond { position: absolute; left: 0; right: 0; top: calc(100% + 1.6mm); text-align: center;
+  font: 600 8pt var(--technique); color: var(--gneiss); letter-spacing: .02em; }
+.photo-rond img { object-fit: cover; }
+.photo-bouteille img { object-fit: contain; object-position: 50% 100%; }
