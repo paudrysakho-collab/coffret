@@ -53,3 +53,10 @@ Texte courant 9 pt minimum.
   commit et push.
 - Ses fichiers sont sur son **Google Drive** et dans ses mails ; chercher soi-même avant de
   demander.
+
+## Archive (mémoire détaillée)
+
+Le détail des sessions (décisions, essais rejetés, prix et faits à garder) est dans `ARCHIVE.md` à la
+racine, puis `ARCHIVE-2.md`… quand il devient trop gros. Skill `archive-session` : quand l'utilisateur dit
+« archive » (à 60-70 % du contexte), ajouter une entrée à la fin du fichier, commit et push. Chercher un
+détail ancien avec `grep -n -i "<mot>" ARCHIVE*.md`.
