@@ -125,7 +125,7 @@ const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
   .coord .tel { color: var(--violet); font-weight: 600; }
   .scio { text-align: right; }
   .scio img { width: 34mm; display: block; margin-left: auto; }
-  .scio span { display: block; margin-top: 1.6mm; font: 400 7.4pt var(--technique); color: var(--silex); }
+  .scio span { display: block; margin-top: 0; font: 400 7.4pt var(--technique); color: var(--silex); }
   /* .sanitaire est déjà posé en bas de page par systeme.css : on ne règle que l'assiette */
   .sanitaire { left: 15mm; bottom: 7mm; font-size: 6.4pt; opacity: .7; }
 </style></head><body><div class="p">
@@ -173,7 +173,6 @@ const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
         <div class="mentions">${E.mentions}</div>
       </div>
       <div class="scio">
-        <img src="../src/images/logo-agence-scio-detoure.png" alt="Agence SCIO Vins &amp; Spirits">
         <span>${E.pied_agence}</span>
       </div>
     </footer>
