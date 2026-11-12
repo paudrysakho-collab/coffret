@@ -172,9 +172,6 @@ const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
         ${E.contacts.horaires} · ${E.contacts.site}
         <div class="mentions">${E.mentions}</div>
       </div>
-      <div class="scio">
-        <span>${E.pied_agence}</span>
-      </div>
     </footer>
   </div>
   <div class="sanitaire">${SANITAIRE}</div>
